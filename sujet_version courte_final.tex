@@ -1,0 +1,141 @@
+\documentclass[a4paper, 10pt]{article}
+\hyphenpenalty=8000
+\textwidth=150mm %125mm
+\textheight=200mm %185mm
+
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total={170mm,257mm},
+	left=20mm,
+	top=20mm,
+}
+%\usepackage{alltt}
+%this package is suitable for the description of algorithms and computer programs
+%
+\usepackage[hidelinks, pdftex]{hyperref}
+%this package produces hypertext links in the document
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\newcommand{\doi}[1]{\href{https://doi.org/#1}{\texttt{https://doi.org/#1}}}
+
+\begin{document}
+
+\begin{center}
+\Large \textbf{Proposition de thèse: \\ Détection statistique catégorielle des signaux
+}\\[6pt]
+\small
+\textbf{Dominique Pastor}\\[6pt]
+IMT Atlantique, Lab-STICC, UMR CNRS 6285, 29238, France \\ dominique.pastor@imt-atlantique.fr\\[6pt]
+Mars 2025
+\end{center}
+
+%\nocite{2009ProcDETAp}
+\section{Introduction}
+
+L'objectif global de cette thèse est de poser les fondements d'une théorie catégorielle de la détection statistique du signal en complément de la littérature en probabilités catégorielles \url{https://golem.ph.utexas.edu/category/2024/08/introduction_to_categorical_pr.html}. Pour cela, on considèrera les tests statistiques fondamentaux que l'on rencontre pour détecter des signaux d'intérêt. On ne se contentera pas des tests statistiques usuels mais on considèrera une nouvelle de classe de tests dont les premiers fondements sont posés dans \cite{pastorRandomDistortionTesting2013}. 
+
+Dans ce document, nous présentons plusieurs pistes de recherche en offrant ainsi une perspective très large et plutôt complète dans laquelle pourra s'inscrire le travail de recherche. Il ne sera pas possible de traiter toutes ces pistes en en abordant tous les aspects. Il s'agira plutôt de naviguer entre ces différents suggestions, quitte à s'investir dans certains sujets plus que dans d'autres. Il est essentiel de souligner que pour chaque problématique discutée ci-dessous, le doctorant partira toujours de matériel préliminaire suffisamment avancé pour lui fournir une bonne base de réflexion. Ce matériel est constitué des travaux que nous avons menés et auxquels nous nous référons pour discuter des différentes pistes proposées ci-dessous. Dans des cas soulignés explictement ci-dessous, le doctorant pourra contribuer significativement à des travaux requiérant des travaux complémentaires essentiels.
+
+%Avant de détailler tout cela, il nous faut donner quelques éléments de contexte, notamment concernant la détection statistique du signal: Qu'est-ce que c'est? Pourquoi catégorifier la détection statistique du signal? Pourquoi ne pas considérer les tests statistiques en général en partant de \cite{lehmannTestingStatisticalHypotheses2005} par exemple?
+
+%Nous allons essayer de répondre à ces questions et d'autres. Commençons d'ailleurs par la dernière: pourquoi la détection statistique des signal et non pas les tests statistiques en général? La réponse est simple: nous cherchons fondamentalement des solutions optimales, au sens d'un critère approprié, aux problèmes de détection statistique des signaux car garantir les performances d'un test et son optimalité est souvent cruciale dans des applications à haute valeur ajoutée. De plus, ne considérer que la détection statistique des signaux n'est pas une réelle restriction: la détection statistique des signaux est un problème fondamental qui traverse de nombreux champs scientifiques et fournit un cadre de réflexion extrêmement large qui peut motiver un travail de recherche fondamental et appliqué en mathématiques, comme nous allons essayer de l'expliquer clairement ci-dessous.
+
+%Nous pouvons aussi, dès à présent, expliquer pourquoi nous allons considérer un cadre catégoriel pour notre travail de recherche. Tout simplement, parce que notre réflexion s'articule autour de l'algèbre, de la topologie et de la géométrie, trois branches des mathématiques que la théorie des catégories recouvre. Cependant, si la théorie des catégories apparaît incontournable dans ce travail de recherche, il faut garder à l'esprit que sur certains aspects, nous n'aurons peut-être pas qu'un besoin partiel de cette théorie et qu'il faudra plutôt approfondir certains aspects purement algébriques, purement géométriques ou purement topologiques.
+
+\section{La détection statistique des signaux}
+
+\subsection{Problématique et approches classiques}
+
+%Commençons par la notion de signal. Un \textbf{signal} est tout simplement une fonction mathématique paramétrique représentant un phénomène physique. Les paramètres de cette fonction sont des grandeurs physiques, voire des fonctions, potentiellement elles-mêmes paramétriques, de grandeurs physiques.
+
+%\begin{quotation}
+%\noindent
+%\small 
+%Par exemple, un radar émet une onde. L'onde émise par un radar est souvent représentée par le \textbf{signal radar} $S_{A,\nu_0,\theta,T}: {\mathbb R} \to {\mathbb R}$ défini par $S_{A,\nu_0,\theta,T}(t) = A cos (2 \pi \nu_0 t + \theta) \mathbbm{1}_{[0,T]}(t)$ où la fonction $\mathbbm{1}_{[0,T]}(t)$ est la fonction indicatrice de l'intervalle temporel $[0,T]$. La fonction $S_{A,\nu_0,\theta,T}$ est une représentation dans le temps de l'onde radar. Cette fonction est paramétrée par :
+%\begin{itemize}
+%	\item $A$: l'amplitude du signal radar; $A \in [0,\infty[$
+%	\item $\nu_0$: fréquence du signal radar; $\nu_0 \in [0,\infty[$
+%	\item $\theta$: phase du signal radar: $\theta \in [0,2\pi[$
+%	\item $T$: durée de l'onde radar: $T \in [0,\infty[$
+%\end{itemize}
+%La fréquence $\nu_0$ d'un signal radar reçu d'un objet mobile est une fonction de la vitesse de ce mobile. La connaissance de la fréquence $\nu_0$ équivaut à la connaissances de la vitesse du mobile.
+%\end{quotation}
+%Si nous voulons caractériser le phénomène physique dont émane le signal, il nous faut calculer la valeur de certains paramètres, comme la fréquence du signal radar pour accéder à la vitesse d'un mobile. La difficulté est qu'un capteur ne capture pas seulement le signal dont nous voulons calculer les paramètres, mais une version bruitée de ce signal. La version bruitée du signal d'intérêt est un signal \textbf{aléatoire} que nous appelons \textbf{observation}, \textbf{mesure} ou \textbf{signal reçu} suivant nos goûts personnels ou l'humeur du moment. Nous traitons alors ce signal aléatoire pour \textbf{estimer} les valeurs des paramètres du signal. Cette estimation est \textbf{statistique} parce que la mesure dont nous disposons est aléatoire. Même les paramètres du signal peuvent être considérés commes des variables aléatoires.
+
+%Mais pour estimer le signal, encore faut-il que le signal soit présent! En effet, un estimateur statistique produit toujours un résultat tant qu'on lui fournit des données d'entrée, et même lorsque ces données n'ont rien à voir avec le signal d'intérêt. L'estimation des paramètres du signal nécessite donc un \textbf{détecteur statistique} en amont de l'estimation. La fonction de ce détecteur est de tester si le signal est présent ou non. Si le détecteur décide que le signal est présent, nous pouvons procéder à une estimation des paramètres. La détection est statistique, là encore parce que nore mesure est aléatoire.
+
+Nous formalisons le problème de la détection statistique en supposant que nous observons le vecteur aléatoire $Y = \Theta + X$ où $\Theta$ est le signal et où $X$ est le bruit, indépendant de $\Theta$. Décider de la présence ou non du signal revient alors à chercher à savoir si $\Theta = 0$ ou non. Nous disons plutôt que nous voulons tester si $\Theta = 0$. Cette formalisation est malheureusement trop simple pour la raison suivante. Dans de nombreux cas, nous aurons ${\mathbb P} [ \Theta = 0] = 0$. Tester si $\Theta = 0$ ou non n'a pas réellement de sens dans ce cas.
+
+Pour contourner le problème, l'approche classique revient à introduire une représentation binaire en écrivant $Y =\varepsilon \Theta + X$, où $\varepsilon$ est une variable aléatoire de Bernoulli à valeurs dans $\{0,1\}$, indépendante du signal $\Theta$ et du bruit $X$. Le problème de la détection du signal revient alors à tester la valeur de la variable indicatrice $\varepsilon$ de la présence ou non du signal. Pour répondre à ce problème, nous avons les approches Bayésiennes et non-Bayésiennes. Celles-ci reposent essentiellement sur le \textbf{rapport de vraisemblance} défini comme le rapport entre la distribution de probabilité du signal bruité par la distribution de probabilité du bruit. Malheureusement, ``{\em Problems arise when the true underlying statistical models deviate from the nominal assumptions about noise and for signal}~'' \cite{willet1997}. De plus, ``{\em “even if the model is reasonably good, our knowledge of the parameters in it [\ldots] may not be enough to justify a direct numerical evaluation of formulas derived from the model.~”} \cite{kailathDetectionStochasticProcesses1998}. Les théories des tests robustes comme celles de \cite{huberRobustStatistics2009}, \cite{kariya1989}, \cite{zoubir2021}, tentent de contourner le problème. Mais ces théories se ramènent à un test basé sur le rapport de vraisemblance le plus ``défavorable'' au sens d'un critère topologique qu'il faut choisir a priori.
+
+\subsection{Une alternative aux approches classiques}
+\label{sec: RDT}
+
+Dans \cite{pastorRandomDistortionTesting2013} et \cite{pastorRandomDistortionTesting2018}, nous initions une théorie alternative aux approches Bayésiennes et non-Bayésiennes, ainsi qu'aux approches robustes évoquées ci-dessus. Cette théorie a été étendue dans \cite{pastorRobustStatisticalProcess2015, pastorRandomDistortionTesting2018, khanduriSequentialRandomDistortion2019, khanduriTruncatedSequentialNonParametric2019} et utilisée aussi pour définir une nouvelle fonction de similarité \cite{Bompais2018}. Elle a été appliquée en traitement des signaux audio \cite{Eurasip2012, Mai2018a} et pour détecter des anomalies dans des signaux biomédicaux \cite{BMC_BMEO_AutoPEEP_2012,Cherif2016}. Nous étudions aussi l'apport de cette théorie pour modéliser les systèmes biologiques \cite{EPJ2022}. Des versions asymptotiques en cours étendent \cite{ansel2021_ifsa, ansel2021_isvc}.
+
+Dans \cite{pastorRandomDistortionTesting2013} qui suffit ici, nous écrivons le signal reçu sous la forme $Y = \Theta + X$ où $\Theta$ est le signal et $X$ est le bruit supposé Gaussien de matrice de covariance définie positive $C$. La distribution du signal n'est pas connue dans notre approche. Le problème est alors de tester si $\nu_C(\Theta) \leq \tau$ où $\nu_C$ est la norme de Mahalanobis $\nu_C(x) = \sqrt{x^T C^{-1} x}$. Nous disons alors qu'il y a détection lorsque $\nu_C(\Theta) > \tau$, c'est-à-dire lorsque $\Theta$ est trop \emph{éloigné} de $0$ au sens de la norme de Mahalanobis. Le signal nul est un modèle et nous cherchons donc à tester si la distance du signal au signal nul est plus grande que $\tau$ ou non. D'où le nom de random Distortion testing (RDT) donné à ce problème dans \cite{pastorRandomDistortionTesting2013} et pour lequel nous avons un test RDT optimal, sans avoir à connaître d'autre distribution de probabilité que celle du bruit.
+
+\section{Objectifs de la thèse}
+
+L'objectif est de proposer un cadre théorique intégrant les approches statistiques classiques Bayésiennes et non-Bayésiennes, l'approche RDT et ses extensions, afin d'étudier les interactions potentielles et fondamentales entre ces différentes théories. Ce cadre théorique est catégoriel pour impliquer les aspects topologiques, algébriques et géométriques fondamentaux de ces différentes théories. Nous espérons aussi que les propriétés catégorielles de ces approches statistiques nous permettent d'inventer de nouvelles notions en théorie des catégories. 
+
+Nous allons maintenant détailler les différents aspects algébriques, géométriques et topologiques impliqués. Le cadre théorique que nous posons ici nous amène aussi à prolonger nos réflexions sur le principe de multiplicité en statistiques, dans la continuité de nos publications antérieures sur le sujet.
+
+Comme souligné dans l'introduction, rappelons que nous fournissons à dessein une perspective très large permettant de naviguer entre différents aspects, sachant que dans chaque cas, l'étudiant trouvera un matériel suffisamment avancé pour lui permettre de s'investir avec un effort raisonnable et apporter sa valeur ajoutée de manière significative.
+
+\subsection{Algébrisation}
+
+Nous travaillons à une extension de la théorie RDT. L'idée est de partir du test RDT optimal obtenu dans le cas élémentaire d'un bruit blanc et Gaussien; ce test optimal est le plus grand élément dans un pré-ordre; nous pouvons alors transférer cette propriété par morphismes croissants entre pré-ordres eux-mêmes issus d'homomorphismes de groupes; dans chaque pré-ordre ainsi construit, nous obtenons un plus grand élément à partir du test RDT élémentaire. Ce travail a pour objectif d'unifier tous les résultats que nous avons pu énoncer dans la théorie RDT. \textbf{Le doctorant est invité à compléter ce travail, notamment en y apportant une vision catégorielle par adjunctions.}
+
+Nous proposons ensuite d'étudier comment unifier la détection statistique des signaux basée sur le rapport de vraisemblance et les tests RDT dans un cadre théorique commun en utilisant la catégorie STOCH définie comme la catégorie de Kleisli de la monade de Giry. Plus précisément, les tests statistiques usuels minimisent des risques calculés par intégration de mesures de probabilité conditionnelle. Ce risque statistique permet de définir un pré-ordre. A la différence des tests statistiques usuels, le pré-ordre dans la théorie RDT est directement défini sur des mesures de probabilités conditionnelles. La catégorie STOCH est alors la catégorie "naturelle" pour manipuler ces deux cas de figure. Nous nous proposons donc d'étudier les rapports entre RDT et tests par rapport de vraisemblance en replaçant la problématique de la décision dans le cadre formel fourni par la catégorie STOCH et ses liens avec la catégorie des décisions formelles de \cite{cencov2000statistical}. %Il faudra étudier dans quelle mesure le fait que STOCH est la catégorie de Kleisli de la monade de Giry nous apporte une information essentielle dans notre analyse.
+
+\subsection{Géométrisation}
+
+L'invariance est un concept fondamental pour la détection statistique des signaux. En fait, l'existence d'un test optimal pour détecter un signal en optimisant un critère donné est finalement assez rare. Cependant, les problèmes de détection statistique de signaux exhibent souvent des propriétés d'invariance via l'action d'un groupe. On recherche alors un test optimal parmi l'ensemble des tests invariants sous l'action de ce groupe. %\cite{lehmannTestingStatisticalHypotheses2005, borovkov1999, l.eatonMultivariateStatisticsVector2007, kariya1989,levyPrinciplesSignalDetection2008}. 
+
+Dans l'approche RDT, l'invariance est fondamentalement associée à celle de la distribution de probabilité du bruit. Dans le cas du test RDT élémentaire où le bruit est supposé blanc et gaussien, la distribution du bruit est invariante sous l'action du groupe orthogonal. La norme euclidienne étant un maximal invariant du groupe orthogonal, il devient naturel de tester si la valeur de ce maximal invariant dépasse ou non une tolérance $\tau$. L'invariance permet de poser le problème RDT et de définir le critère pour lequel les tests RDT sont optimaux. Dans ce travail de recherche, nous voulons alors approfondir les liens entre invariance, problématique RDT, critère d'optimisation et solution. L'invariance permet de calculer les distributions de probabilités d'invariants maximaux et d'énoncer des propriétés d'invariance des rapports de vraisemblance \cite{l.eatonMultivariateStatisticsVector2007, kariya1989}. Nous cherchons à énoncer des résultats analogues pour généraliser la théorie RDT.
+
+Dans cette veine, une piste susceptible de conduire à une généralisation de la théorie RDT est la suivante. Initialement, la théorie été établie pour le cas d'un bruit Gaussien additif et indépendant du signal. La distribution de probabilité de ce bruit est invariante sous l'action d'un groupe dont un maximal invariant apparaît directement dans l'argument de l'exponentielle de la densité. Ainsi, comme rappelé ci-dessus, si la loi est centrée et de matrice de covariance identité, le maximal invariant est la norme euclidienne et le groupe concerné est le groupe orthogonal. D'autre part, la densité de probabilité de la loi Gaussienne est la densité de Radon-Nikodym par rapport à la mesure de Lebesgue et la mesure de Lebesgue est elle-même la mesure de Haar invariante par translation. Nous avons donc deux invariances: une par rapport au groupe des translations et une par rapport à un groupe $G$ dont un cas particulier est le groupe orthogonal. Nous proposons donc d'étudier le cas où la distribution de probabilité garde la densité Gaussienne usuelle --- et reste donc invariante par rapport au groupe $G$ --- par rapport à une mesure de Haar autre que la mesure de Lebesgue. La théorie RDT devrait pouvoir alors être généralisée à peu de frais dans le cas d'un bruit ayant cette distribution de probabilité. Il faut évidemment le vérifier mais aussi mieux connaître ces distributions et leur interprétation pour mieux appréhender leur pertinence en pratique. En particulier, quelles sont les distributions de probabilité des signaux observés que nous pouvons générer avec de tels modèles et est-ce qu'une théorie RDT peut être développée pour chacune de ces distributions? \textbf{Cette piste de recherche est une bonne entrée pour l'étude plus générale de la géométrisation de l'approche RDT et le doctorant peut s'en saisir dans la continuité des travaux préliminaires proposés dans \cite{ansel2021, bourmaniBinaryDecisionObservations2020}}.
+
+\subsection{Topologisation}
+
+Les régions critiques des tests RDT constituent une topologie que nous appelons la topologie RDT. Les tests de Neymann-Pearson, qui sont fondamentaux dans la littérature classique pour la détection de signaux dans le bruit, peuvent être approximés par des tests RDT pour la raison topologique suivante: la région critique d'un test de Neyman-Pearson peut être recouvert par une union infinie dénombrable d'ouverts de la topologie RDT. Nous devions pouvoir démontrer ce résultat avec des arguments élémentaires de topologie. \textbf{Le doctorant pourra d'ailleurs rapidement s'approprier ce problème et le résoudre pour une publication.} Mais nous proposons d'aller plus loin en nous demandant si cette démonstration n'est pas l'émanation d'un processus plus général que nous pourrions capturer via les notions de pré-faisceaux et de topos.
+
+%\begin{quotation}
+%	\noindent
+%	\textbf{Quelques rappels sur les préfaisceaux et les topos.} Étant donné un espace topologique $U$. Dans cet espace se produisent des événements. Un préfaisceau fournit les différentes traces d'un événement sur les ouverts de $U$. Il peut exister de nombreux pré- faisceaux renvoyant différentes traces du même événement sur un même ouvert. Un préfaisceau constitue ainsi une certaine perspective sur les événements se produisant dans $U$.
+%	
+%	Le topos des préfaisceaux sur $U$ est l’ensemble de tous les pré- faisceaux sur $U$ et est noté $\text{PSh}(U)$. Stricto sensu, il ne s’agit pas d’un ensemble. Par conséquent, les préfaisceaux qu’il rassemble sont appelés ses objets et non ses éléments.
+%	
+%	Il existe des morphismes $f: P \rightarrow Q$ entre des objets $P$ et $Q$ de $\text{PSh}(U)$. Si $f: P \rightarrow Q$ et $g: Q \rightarrow R$ sont deux morphismes de $\text{PSh}(U)$, ces deux morphismes se composent pour donner $g \circ f: P \rightarrow R$, en plus des morphismes déjà existants ayant pour domaine $P$ et codomaine $R$.
+%	
+%	Il existe un objet particulier de $\text{PSh}(U)$, appelé sub-object classifieur et noté $\Omega$, à partir des propriétés duquel on peut construire une logique et une sémantique interne à $\text{PSh}(U)$. Les valeurs de vérité de cette logique sont des ouverts de $U$, tous rassemblés dans $\Omega$. Un prédicat dans cette logique est un morphisme $P: X \rightarrow \Omega$ de $\text{PSh}(U)$. Selon cette logique, un prédicat est vrai sur certains ouverts et faux sur d’autres.
+%	
+%	``\emph{The point is that the truth values in the topos of sheaves on a space $(X, Op)$ are the open sets of that space. When someone says “is property $P$ true?,” the answer is not yes or no, but “it is true on the open subset $U$.” If this $U$ is everything, $U = X$ , then $P$ is really true; if $U$ is nothing, $U = \emptyset$, then $P$ is really false. But in general, it’s just true some places and not others.}'' \cite{fong2018sevensketchescompositionalityinvitation}
+%	
+%	``\emph{To provide semantics for a logical system means to provide a compiler that converts each logical statement in the formal language into a mathematical statement about particular sheaves and their relationships. A computer can carry out logical deductions without knowing what any of them “mean” about sheaves. We say that semantics is sound if every formal proof is converted into a true fact about the relevant sheaves. Every topos can be assigned a formal language, often called its internal language, in which to carry out constructions and formal proofs. This language has a sound semantics—a sort of logic-to-sheaf compiler—which goes under the name categorical semantics or Kripke-Joyal semantics.}'' \cite{fong2018sevensketchescompositionalityinvitation} 
+%\end{quotation}
+
+Notre conjecture est qu'il existe une \textbf{logique de la détection statistique} et plus généralement, de la décision statistique. Ainsi, les p-values des tests statistiques et des tests RDT fournissent un topos de faisceaux (sheaf topos) $\text{PSh}(U)$, où $U = [0,1]$ est muni de la topologie $ \{ [0,a[: 0 \leqslant a \leqslant 1 \}$ \cite{beurier:hal-02190029}. Comme tout topos \cite{McLarty1992, MacLane1994}, ce topos fournit alors une logique (Mitchell-Bénabou) et une sémantique (Kripke-Joyal), ce que nous n'avons pas étudié jusqu'ici. Cette logique peut se trouver de manière heuristique via la notion de pvalue. La théorie des topos est-elle alors indispensable? Nous pensons que c'est la sémantique de cette logique qu'il faut étudier. Là encore,\textbf{ ce travail peut être repris par le doctorant pour compléter notre travail préliminaire}.
+
+\subsection{Principe de Multiplicité}
+
+Le Principe de Multiplicité (PM) introduit dans \cite{EhresmannVanbremeersch2007} est une formalisation catégorielle du principe biologique de dégénéricité (degeneracy en anglais) \cite{Edelman2001}. Ce terme est trompeur et nous préférons parler dé-généricité pour indiquer la propension d'un système biolgique à s'écarter de la généricité pour évoluer. Plus précisément, le PM, comme son alter-ego biologique, la dé-généricité, ``{\em désignent la capacité d’un système à proposer plusieurs solutions pour accomplir une même fonction. Il s’agit d’une redondance fonctionnelle, et non pas matérielle et/ou structurelle, contrairement à ce que l’on retrouve en ingénierie.}'' \cite{beurier2020}. 
+
+La multiplicité des tests RDT et la possibilité évoquée ci-dessus d'approximer les tests de Neyman-Pearson par des tests RDT nous conduit à revisiter la notion de multiplicité en statistiques dans la continuité de \cite{interfacingPastor2019} où nous montrons que les tests statistiques de Neyman-Pearson et les tests RDT satisfont eux-mêmes au PM. %Le doctorant pourrait aussi s'intéresser aux versions séquentielles de la théorie RDT \cite{khanduriSequentialRandomDistortion2019}, \cite{khanduriTruncatedSequentialNonParametric2019} en comparaison de l'algorithme SPRT (Sequential Probabilité Ratio Test) proposé par Wald \cite{waldSequentialTestsStatistical1945} et qui fait office de référence. De la même manière que les tests de Neyman-Pearson et les tests RDT satisfont au PM pour la détection statistique du signal, nous conjecturons que les versions séquentielles des tests RDT et les tests séquentiels de Wald vérifient aussi ce PM. Ces résultats très théoriques sont importants en pratique pour concevoir des systèmes résilients de détection des signaux distribués sur des réseaux de capteurs. 
+Dans une première étape permettant à l'étudiant de se familiariser avec ce sujet tout en apportant une contribution significative, \textbf{le doctorant pourra travailler sur une généralisation du PM que nous avons commencée avec Erwan Beurier.}
+
+\bibliographystyle{NAplain}
+\bibliography{references}
+
+\end{document}
